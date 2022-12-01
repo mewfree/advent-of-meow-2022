@@ -1,0 +1,4 @@
+#+title: Advent of Meow 2022
+
+* Days
+- [ ] Day 1
