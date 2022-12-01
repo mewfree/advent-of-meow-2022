@@ -1,4 +1,6 @@
 #+title: Advent of Meow 2022
 
 * Days
-- [ ] Day 1
+| Day   | Solution                                   | Language |
+|-------+--------------------------------------------+----------|
+| Day 1 | [[file:./day-01/solution.jl][solution.jl]] | Julia    |
