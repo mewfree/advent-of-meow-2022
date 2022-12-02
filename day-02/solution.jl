@@ -22,3 +22,29 @@ function play(pair)
 end
 
 println("Part 1: ", sum(play.(input)))
+
+function transform2(pair)
+    # hm is short for hand_mapping
+    hm = Dict("A" => :rock, "B" => :paper, "C" => :scissors, "X" => :lose, "Y" => :draw, "Z" => :win)
+    if hm[pair[2]] == :lose
+        if hm[pair[1]] == :rock
+            [pair[1], "Z"]
+        elseif hm[pair[1]] == :scissors
+            [pair[1], "Y"]
+        elseif hm[pair[1]] == :paper
+            [pair[1], "X"]
+        end
+    elseif hm[pair[2]] == :draw
+        [pair[1], pair[1]]
+    elseif hm[pair[2]] == :win
+        if hm[pair[1]] == :rock
+            [pair[1], "Y"]
+        elseif hm[pair[1]] == :scissors
+            [pair[1], "X"]
+        elseif hm[pair[1]] == :paper
+            [pair[1], "Z"]
+        end
+    end
+end
+
+println("Part 2: ", sum(play.(transform2.(input))))
