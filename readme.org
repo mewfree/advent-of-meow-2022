@@ -4,3 +4,4 @@
 | Day   | Solution                                   | Language |
 |-------+--------------------------------------------+----------|
 | Day 1 | [[file:./day-01/solution.jl][solution.jl]] | Julia    |
+| Day 2 | [[file:./day-02/solution.jl][solution.jl]] | Julia    |
