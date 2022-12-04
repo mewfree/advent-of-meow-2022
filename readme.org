@@ -1,9 +1,9 @@
 #+title: Advent of Meow 2022
 
 * Days
-| Day   | Solution                                     | Language             |
-|-------+----------------------------------------------+----------------------|
-| Day 1 | [[file:./day-01/solution.jl][solution.jl]]   | Julia                |
-| Day 2 | [[file:./day-02/solution.jl][solution.jl]]   | Julia                |
-| Day 3 | [[file:./day-03/solution.jl][solution.jl]]   | Julia                |
-| Day 4 | [[file:./day-04/solution.org][solution.org]] | Julia (via org-mode) |
+| Day   | Solution                                   | Language                                             |
+|-------+--------------------------------------------+------------------------------------------------------|
+| Day 1 | [[file:./day-01/solution.jl][solution.jl]] | Julia                                                |
+| Day 2 | [[file:./day-02/solution.jl][solution.jl]] | Julia                                                |
+| Day 3 | [[file:./day-03/solution.jl][solution.jl]] | Julia                                                |
+| Day 4 | [[file:./day-04/solution.jl][solution.jl]] | Julia (via [[file:./day-04/solution.org][org-mode]]) |

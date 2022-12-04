@@ -1,7 +1,8 @@
 #+title: Advent of Code Day 4 Solution
+#+property: header-args :tangle solution.jl
 
 Sample input:
-#+begin_src sh :results verbatim
+#+begin_src sh :results verbatim :tangle no
 cat sample_input
 #+end_src
 
