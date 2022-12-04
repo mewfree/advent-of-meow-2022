@@ -17,7 +17,7 @@ cat sample_input
 Each pair of elves, are assigned sections: b1-e1,b2-e2
 In how many assignment pairs does one range fully contain the other?
 
-#+begin_src julia-vterm :session day4
+#+begin_src julia :session day4
 using DelimitedFiles
 
 input = readdlm("input", ',', String) |> f -> map(x -> map(i -> parse(Int, i), split(x, "-")), f) |> eachrow |> collect
@@ -48,7 +48,7 @@ input = readdlm("input", ',', String) |> f -> map(x -> map(i -> parse(Int, i), s
  [[38, 76], [37, 76]]
 #+end_example
 
-#+begin_src julia-vterm :session day4
+#+begin_src julia :session day4
 fully_contained = [(x[1][1] in x[2][1]:x[2][2] && x[1][2] in x[2][1]:x[2][2]) || (x[2][1] in x[1][1]:x[1][2] && x[2][2] in x[1][1]:x[1][2]) for x in input]
 #+end_src
 
@@ -77,14 +77,14 @@ fully_contained = [(x[1][1] in x[2][1]:x[2][2] && x[1][2] in x[2][1]:x[2][2]) ||
  1
 #+end_example
 
-#+begin_src julia-vterm :session day4 :results output
+#+begin_src julia :session day4 :results output
 println("Part 1: ", sum(fully_contained))
 #+end_src
 
 #+RESULTS:
 : Part 1: 528
 
-#+begin_src julia-vterm :session day4
+#+begin_src julia :session day4
 overlap = [(x[1][1] in x[2][1]:x[2][2] || x[1][2] in x[2][1]:x[2][2]) || (x[2][1] in x[1][1]:x[1][2] || x[2][2] in x[1][1]:x[1][2]) for x in input]
 #+end_src
 
@@ -113,7 +113,7 @@ overlap = [(x[1][1] in x[2][1]:x[2][2] || x[1][2] in x[2][1]:x[2][2]) || (x[2][1
  1
 #+end_example
 
-#+begin_src julia-vterm :session day4 :results output
+#+begin_src julia :session day4 :results output
 println("Part 2: ", sum(overlap))
 #+end_src
 
