@@ -10,3 +10,13 @@ for (i, v) in input |> i -> split(i, "") |> enumerate
         break
     end
 end
+
+l14 = fill("", 14)
+for (i, v) in input |> i -> split(i, "") |> enumerate
+    push!(l14, v)
+    popfirst!(l14)
+    if (l14 |> l -> filter(!isempty, l) |> unique |> length) == 14
+        println("Part 2: ", i)
+        break
+    end
+end

@@ -25,3 +25,19 @@ end
 
 #+RESULTS:
 : Part 1: 7
+
+Trying to find first time there's 14 different characters
+#+begin_src julia :session day6 :results output :exports both
+l14 = fill("", 14)
+for (i, v) in input |> i -> split(i, "") |> enumerate
+    push!(l14, v)
+    popfirst!(l14)
+    if (l14 |> l -> filter(!isempty, l) |> unique |> length) == 14
+        println("Part 2: ", i)
+        break
+    end
+end
+#+end_src
+
+#+RESULTS:
+: Part 2: 19
