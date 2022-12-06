@@ -1,4 +1,5 @@
-input = open(f -> read(f, String), "input") |> f -> split(f, "\n\n")
+filename = get(ARGS, 1, "sample_input")
+input = open(f -> read(f, String), filename) |> f -> split(f, "\n\n")
 
 function chunk4(stack)
     [i % 4 == 0 ? "" : x for (i, x) in enumerate(stack)] |> s -> filter(!isempty, s) |> s -> Iterators.partition(s, 3) |> s -> join.(s)

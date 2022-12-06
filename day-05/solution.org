@@ -19,13 +19,14 @@ cat sample_input
 
 Parsing the file:
 #+begin_src julia :session day5 :exports both
-input = open(f -> read(f, String), "input") |> f -> split(f, "\n\n")
+filename = get(ARGS, 1, "sample_input")
+input = open(f -> read(f, String), filename) |> f -> split(f, "\n\n")
 #+end_src
 
 #+RESULTS:
 : 2-element Vector{SubString{String}}:
-:  "        [H]     [W] [B]\n    [D]" ⋯ 233 bytes ⋯ " 2   3   4   5   6   7   8   9"
-:  "move 3 from 2 to 9\nmove 1 from" ⋯ 9533 bytes ⋯ "rom 7 to 4\nmove 6 from 7 to 5\n"
+:  "    [D]\n[N] [C]\n[Z] [M] [P]\n 1   2   3"
+:  "move 1 from 2 to 1\nmove 3 from 1 to 3\nmove 2 from 2 to 1\nmove 1 from 1 to 2\n"
 
 Parsing the stacks:
 #+begin_src julia :session day5 :exports both
@@ -37,15 +38,10 @@ raw_stacks = input[1] |> i -> split.(i, "\n") |> s -> view(s, 1:length(s) - 1) |
 #+end_src
 
 #+RESULTS:
-: 8-element Vector{Vector{String}}:
-:  ["   ", "   ", "[H]", "   ", "[W]", "[B]"]
-:  ["   ", "[D]", "[B]", "   ", "[L]", "[G]", "[N]"]
-:  ["[P]", "[J]", "[T]", "   ", "[M]", "[R]", "[D]"]
-:  ["[V]", "[F]", "[V]", "   ", "[F]", "[Z]", "[B]", "   ", "[C]"]
-:  ["[Z]", "[V]", "[S]", "   ", "[G]", "[H]", "[C]", "[Q]", "[R]"]
-:  ["[W]", "[W]", "[L]", "[J]", "[B]", "[V]", "[P]", "[B]", "[Z]"]
-:  ["[D]", "[S]", "[M]", "[S]", "[Z]", "[W]", "[J]", "[T]", "[G]"]
-:  ["[T]", "[L]", "[Z]", "[R]", "[C]", "[Q]", "[V]", "[P]", "[H]"]
+: 3-element Vector{Vector{String}}:
+:  ["   ", "[D]"]
+:  ["[N]", "[C]"]
+:  ["[Z]", "[M]", "[P]"]
 
 #+begin_src julia :session day5 :exports both
 max_length = raw_stacks |> s -> map(length, s) |> maximum
@@ -54,18 +50,10 @@ stacks = hcat(raw_stacks...) |> s -> eachrow(s) |> s -> filter.(b -> b != "   ",
 #+end_src
 
 #+RESULTS:
-#+begin_example
-9-element Vector{Vector{String}}:
- ["[P]", "[V]", "[Z]", "[W]", "[D]", "[T]"]
- ["[D]", "[J]", "[F]", "[V]", "[W]", "[S]", "[L]"]
- ["[H]", "[B]", "[T]", "[V]", "[S]", "[L]", "[M]", "[Z]"]
- ["[J]", "[S]", "[R]"]
- ["[W]", "[L]", "[M]", "[F]", "[G]", "[B]", "[Z]", "[C]"]
- ["[B]", "[G]", "[R]", "[Z]", "[H]", "[V]", "[W]", "[Q]"]
- ["[N]", "[D]", "[B]", "[C]", "[P]", "[J]", "[V]"]
- ["[Q]", "[B]", "[T]", "[P]"]
- ["[C]", "[R]", "[Z]", "[G]", "[H]"]
-#+end_example
+: 3-element Vector{Vector{String}}:
+:  ["[N]", "[Z]"]
+:  ["[D]", "[C]", "[M]"]
+:  ["[P]"]
 
 Parsing the steps:
 #+begin_src julia :session day5 :exports both
@@ -73,29 +61,11 @@ steps = input[2] |> s -> split.(s, "\n") |> s -> filter(!isempty, s)
 #+end_src
 
 #+RESULTS:
-#+begin_example
-501-element Vector{SubString{String}}:
- "move 3 from 2 to 9"
- "move 1 from 1 to 6"
- "move 6 from 6 to 7"
- "move 13 from 7 to 6"
- "move 2 from 4 to 5"
- "move 1 from 4 to 3"
- "move 5 from 9 to 8"
- "move 1 from 8 to 5"
- "move 3 from 1 to 6"
- "move 2 from 1 to 8"
- ⋮
- "move 7 from 4 to 2"
- "move 2 from 8 to 6"
- "move 1 from 1 to 9"
- "move 5 from 2 to 1"
- "move 2 from 1 to 3"
- "move 10 from 2 to 8"
- "move 3 from 9 to 3"
- "move 1 from 7 to 4"
- "move 6 from 7 to 5"
-#+end_example
+: 4-element Vector{SubString{String}}:
+:  "move 1 from 2 to 1"
+:  "move 3 from 1 to 3"
+:  "move 2 from 2 to 1"
+:  "move 1 from 1 to 2"
 
 Iterating over steps:
 #+begin_src julia :session day5 :results silent
@@ -115,8 +85,7 @@ println("Part 1: ", first.(p1_stacks) |> join |> s -> replace(s, r"[^A-Z]" => ""
 #+end_src
 
 #+RESULTS:
-: Part 1: TLFGBZHCN
-:
+: Part 1: CMZ
 
 Part 2:
 #+begin_src julia :session day5 :results silent
@@ -134,4 +103,4 @@ println("Part 2: ", first.(p2_stacks) |> join |> s -> replace(s, r"[^A-Z]" => ""
 #+end_src
 
 #+RESULTS:
-: Part 2: QRQFHFWCL
+: Part 2: MCD
