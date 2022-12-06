@@ -7,3 +7,4 @@
 | Day 2 | [[file:./day-02/solution.jl][solution.jl]] | Julia                                                |
 | Day 3 | [[file:./day-03/solution.jl][solution.jl]] | Julia                                                |
 | Day 4 | [[file:./day-04/solution.jl][solution.jl]] | Julia (via [[file:./day-04/solution.org][org-mode]]) |
+| Day 5 | [[file:./day-05/solution.jl][solution.jl]] | Julia (via [[file:./day-05/solution.org][org-mode]]) |

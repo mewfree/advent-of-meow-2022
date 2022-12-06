@@ -1,0 +1,131 @@
+#+title: Advent of Code Day 5 Solution
+#+property: header-args :tangle solution.jl
+
+Sample input:
+#+begin_src sh :results verbatim :tangle no :exports both
+cat sample_input
+#+end_src
+
+#+RESULTS:
+:     [D]
+: [N] [C]
+: [Z] [M] [P]
+:  1   2   3
+:
+: move 1 from 2 to 1
+: move 3 from 1 to 3
+: move 2 from 2 to 1
+: move 1 from 1 to 2
+
+Parsing the file:
+#+begin_src julia :session day5 :exports both
+input = open(f -> read(f, String), "input") |> f -> split(f, "\n\n")
+#+end_src
+
+#+RESULTS:
+: 2-element Vector{SubString{String}}:
+:  "        [H]     [W] [B]\n    [D]" ⋯ 233 bytes ⋯ " 2   3   4   5   6   7   8   9"
+:  "move 3 from 2 to 9\nmove 1 from" ⋯ 9533 bytes ⋯ "rom 7 to 4\nmove 6 from 7 to 5\n"
+
+Parsing the stacks:
+#+begin_src julia :session day5 :exports both
+raw_stacks = input[1] |> i -> split.(i, "\n") |> s -> view(s, 1:length(s) - 1)
+#+end_src
+
+#+RESULTS:
+: 8-element view(::Vector{SubString{String}}, 1:8) with eltype SubString{String}:
+:  "        [H]     [W] [B]"
+:  "    [D] [B]     [L] [G] [N]"
+:  "[P] [J] [T]     [M] [R] [D]"
+:  "[V] [F] [V]     [F] [Z] [B]     [C]"
+:  "[Z] [V] [S]     [G] [H] [C] [Q] [R]"
+:  "[W] [W] [L] [J] [B] [V] [P] [B] [Z]"
+:  "[D] [S] [M] [S] [Z] [W] [J] [T] [G]"
+:  "[T] [L] [Z] [R] [C] [Q] [V] [P] [H]"
+
+#+begin_src julia :session day5 :exports both
+function chunk4(stack)
+    [i % 4 == 0 ? "" : x for (i, x) in enumerate(stack)] |> s -> filter(!isempty, s) |> s -> Iterators.partition(s, 3) |> s -> join.(s)
+end
+
+raw_stacks = input[1] |> i -> split.(i, "\n") |> s -> view(s, 1:length(s) - 1) |> s -> chunk4.(s)
+#+end_src
+
+#+RESULTS:
+: 8-element Vector{Vector{String}}:
+:  ["   ", "   ", "[H]", "   ", "[W]", "[B]"]
+:  ["   ", "[D]", "[B]", "   ", "[L]", "[G]", "[N]"]
+:  ["[P]", "[J]", "[T]", "   ", "[M]", "[R]", "[D]"]
+:  ["[V]", "[F]", "[V]", "   ", "[F]", "[Z]", "[B]", "   ", "[C]"]
+:  ["[Z]", "[V]", "[S]", "   ", "[G]", "[H]", "[C]", "[Q]", "[R]"]
+:  ["[W]", "[W]", "[L]", "[J]", "[B]", "[V]", "[P]", "[B]", "[Z]"]
+:  ["[D]", "[S]", "[M]", "[S]", "[Z]", "[W]", "[J]", "[T]", "[G]"]
+:  ["[T]", "[L]", "[Z]", "[R]", "[C]", "[Q]", "[V]", "[P]", "[H]"]
+
+#+begin_src julia :session day5 :exports both
+max_length = raw_stacks |> s -> map(length, s) |> maximum
+raw_stacks = [length(s) < max_length ? append!(s, fill("   ", max_length - length(s))) : s for s = raw_stacks]
+stacks = hcat(raw_stacks...) |> s -> eachrow(s) |> s -> filter.(b -> b != "   ", s)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+9-element Vector{Vector{String}}:
+ ["[P]", "[V]", "[Z]", "[W]", "[D]", "[T]"]
+ ["[D]", "[J]", "[F]", "[V]", "[W]", "[S]", "[L]"]
+ ["[H]", "[B]", "[T]", "[V]", "[S]", "[L]", "[M]", "[Z]"]
+ ["[J]", "[S]", "[R]"]
+ ["[W]", "[L]", "[M]", "[F]", "[G]", "[B]", "[Z]", "[C]"]
+ ["[B]", "[G]", "[R]", "[Z]", "[H]", "[V]", "[W]", "[Q]"]
+ ["[N]", "[D]", "[B]", "[C]", "[P]", "[J]", "[V]"]
+ ["[Q]", "[B]", "[T]", "[P]"]
+ ["[C]", "[R]", "[Z]", "[G]", "[H]"]
+#+end_example
+
+Parsing the steps:
+#+begin_src julia :session day5 :exports both
+steps = input[2] |> s -> split.(s, "\n") |> s -> filter(!isempty, s)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+501-element Vector{SubString{String}}:
+ "move 3 from 2 to 9"
+ "move 1 from 1 to 6"
+ "move 6 from 6 to 7"
+ "move 13 from 7 to 6"
+ "move 2 from 4 to 5"
+ "move 1 from 4 to 3"
+ "move 5 from 9 to 8"
+ "move 1 from 8 to 5"
+ "move 3 from 1 to 6"
+ "move 2 from 1 to 8"
+ ⋮
+ "move 7 from 4 to 2"
+ "move 2 from 8 to 6"
+ "move 1 from 1 to 9"
+ "move 5 from 2 to 1"
+ "move 2 from 1 to 3"
+ "move 10 from 2 to 8"
+ "move 3 from 9 to 3"
+ "move 1 from 7 to 4"
+ "move 6 from 7 to 5"
+#+end_example
+
+Iterating over steps:
+#+begin_src julia :session day5 :results silent
+for step in steps
+    (_, n, _, origin, _, destination) = split(step, " ")
+    for _ in 1:parse(Int, n)
+        x = popfirst!(stacks[parse(Int, origin)])
+        pushfirst!(stacks[parse(Int, destination)], x)
+    end
+end
+#+end_src
+
+#+begin_src julia :session day5 :results output :exports both
+println("Part 1: ", first.(stacks) |> join |> s -> replace(s, r"[^A-Z]" => ""))
+#+end_src
+
+#+RESULTS:
+: Part 1: TLFGBZHCN
