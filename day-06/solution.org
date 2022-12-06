@@ -1,0 +1,27 @@
+#+title: Advent of Code Day 6 Solution
+#+property: header-args :tangle solution.jl
+
+Parsing the file:
+#+begin_src julia :session day6 :exports both
+filename = get(ARGS, 1, "sample_input")
+input = open(f -> read(f, String), filename) |> chomp
+#+end_src
+
+#+RESULTS:
+: "mjqjpqmgbljsphdztnvjfqwrcgsmlb"
+
+Trying to find first time there's 4 different characters
+#+begin_src julia :session day6 :results output :exports both
+l4 = fill("", 4)
+for (i, v) in input |> i -> split(i, "") |> enumerate
+    push!(l4, v)
+    popfirst!(l4)
+    if (l4 |> l -> filter(!isempty, l) |> unique |> length) == 4
+        println("Part 1: ", i)
+        break
+    end
+end
+#+end_src
+
+#+RESULTS:
+: Part 1: 7
