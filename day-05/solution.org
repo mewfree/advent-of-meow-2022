@@ -114,18 +114,39 @@ steps = input[2] |> s -> split.(s, "\n") |> s -> filter(!isempty, s)
 
 Iterating over steps:
 #+begin_src julia :session day5 :results silent
+p1_stacks = deepcopy(stacks)
+
 for step in steps
     (_, n, _, origin, _, destination) = split(step, " ")
     for _ in 1:parse(Int, n)
-        x = popfirst!(stacks[parse(Int, origin)])
-        pushfirst!(stacks[parse(Int, destination)], x)
+        x = popfirst!(p1_stacks[parse(Int, origin)])
+        pushfirst!(p1_stacks[parse(Int, destination)], x)
     end
 end
 #+end_src
 
 #+begin_src julia :session day5 :results output :exports both
-println("Part 1: ", first.(stacks) |> join |> s -> replace(s, r"[^A-Z]" => ""))
+println("Part 1: ", first.(p1_stacks) |> join |> s -> replace(s, r"[^A-Z]" => ""))
 #+end_src
 
 #+RESULTS:
 : Part 1: TLFGBZHCN
+:
+
+Part 2:
+#+begin_src julia :session day5 :results silent
+p2_stacks = deepcopy(stacks)
+
+for step in steps
+    (_, n, _, origin, _, destination) = split(step, " ")
+    x = splice!(p2_stacks[parse(Int, origin)], 1:parse(Int, n))
+    pushfirst!(p2_stacks[parse(Int, destination)], x...)
+end
+#+end_src
+
+#+begin_src julia :session day5 :results output :exports both
+println("Part 2: ", first.(p2_stacks) |> join |> s -> replace(s, r"[^A-Z]" => ""))
+#+end_src
+
+#+RESULTS:
+: Part 2: QRQFHFWCL
