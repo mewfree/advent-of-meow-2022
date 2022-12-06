@@ -1,7 +1,5 @@
 input = open(f -> read(f, String), "input") |> f -> split(f, "\n\n")
 
-raw_stacks = input[1] |> i -> split.(i, "\n") |> s -> view(s, 1:length(s) - 1)
-
 function chunk4(stack)
     [i % 4 == 0 ? "" : x for (i, x) in enumerate(stack)] |> s -> filter(!isempty, s) |> s -> Iterators.partition(s, 3) |> s -> join.(s)
 end

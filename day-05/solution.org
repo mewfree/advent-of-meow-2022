@@ -29,21 +29,6 @@ input = open(f -> read(f, String), "input") |> f -> split(f, "\n\n")
 
 Parsing the stacks:
 #+begin_src julia :session day5 :exports both
-raw_stacks = input[1] |> i -> split.(i, "\n") |> s -> view(s, 1:length(s) - 1)
-#+end_src
-
-#+RESULTS:
-: 8-element view(::Vector{SubString{String}}, 1:8) with eltype SubString{String}:
-:  "        [H]     [W] [B]"
-:  "    [D] [B]     [L] [G] [N]"
-:  "[P] [J] [T]     [M] [R] [D]"
-:  "[V] [F] [V]     [F] [Z] [B]     [C]"
-:  "[Z] [V] [S]     [G] [H] [C] [Q] [R]"
-:  "[W] [W] [L] [J] [B] [V] [P] [B] [Z]"
-:  "[D] [S] [M] [S] [Z] [W] [J] [T] [G]"
-:  "[T] [L] [Z] [R] [C] [Q] [V] [P] [H]"
-
-#+begin_src julia :session day5 :exports both
 function chunk4(stack)
     [i % 4 == 0 ? "" : x for (i, x) in enumerate(stack)] |> s -> filter(!isempty, s) |> s -> Iterators.partition(s, 3) |> s -> join.(s)
 end
