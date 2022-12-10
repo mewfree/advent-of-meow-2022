@@ -1,0 +1,168 @@
+#+title: Advent of Code Day 7 Solution
+#+property: header-args :tangle solution.jl
+
+Parsing the file:
+#+begin_src julia :session day7 :exports both
+filename = get(ARGS, 1, "sample_input")
+input = open(f -> read(f, String), filename) |> chomp |> i -> split(i, "\n")
+#+end_src
+
+#+RESULTS:
+#+begin_example
+23-element Vector{SubString{String}}:
+ "\$ cd /"
+ "\$ ls"
+ "dir a"
+ "14848514 b.txt"
+ "8504156 c.dat"
+ "dir d"
+ "\$ cd a"
+ "\$ ls"
+ "dir e"
+ "29116 f"
+ ⋮
+ "584 i"
+ "\$ cd .."
+ "\$ cd .."
+ "\$ cd d"
+ "\$ ls"
+ "4060174 j"
+ "8033020 d.log"
+ "5626152 d.ext"
+ "7214296 k"
+#+end_example
+
+Custom fetch for deeply-nested Dicts (thanks ChatGPT)
+#+begin_src julia :session day7 :exports both
+function custom_fetch(keys, dict)
+    key = keys[1]
+
+    value = get(dict, key, Dict())
+
+    # if there is only one key in the list of keys, return the value
+    if length(keys) == 1
+        return value
+    end
+
+    remaining_keys = keys[2:end]
+    return custom_fetch(remaining_keys, value)
+end
+#+end_src
+
+#+RESULTS:
+: custom_fetch (generic function with 1 method)
+
+Custom updated for deeply-nested Dicts (thanks ChatGPT)
+#+begin_src julia :session day7 :exports both
+function custom_update(keys, value, dict)
+    key = keys[1]
+
+    curr_value = get(dict, key, Dict())
+
+    # if there is only one key in the list of keys, update the value in the
+    # Dictionary and return the updated Dictionary
+    if length(keys) == 1
+        dict[key] = value
+        return dict
+    end
+
+    # if there are more keys in the list of keys, recursively call the
+    # `custom_update()` function with the remaining keys, the value, and
+    # the current value (which should be a nested Dictionary)
+    remaining_keys = keys[2:end]
+    curr_value = custom_update(remaining_keys, value, curr_value)
+    dict[key] = curr_value
+    return dict
+end
+#+end_src
+
+#+RESULTS:
+: custom_update (generic function with 1 method)
+
+Let's format dirs with / appended
+#+begin_src julia :session day7 :exports both
+root = Dict()
+current_dir = ""
+current_path = []
+
+for cmd in input
+    if startswith(cmd, "\$")
+        if cmd == "\$ cd .."
+            global current_dir = pop!(current_path)
+        elseif startswith(cmd, "\$ cd")
+            global current_dir = replace(cmd, "\$ cd " => "")
+            push!(current_path, current_dir)
+        end
+    elseif startswith(cmd, r"[1-9]")
+        (size, local_filename) = split(cmd, " ")
+        existing_files = custom_fetch(current_path, root)
+        global root = custom_update(vcat(current_path, [local_filename]), parse(Int, size), root)
+    end
+end
+
+root
+#+end_src
+
+#+RESULTS:
+: Dict{Any, Any} with 1 entry:
+:   "/" => Dict{Any, Any}("b.txt"=>14848514, "a"=>Dict{Any, Any}("f"=>29116, "g"=…
+
+Custom check file sizes function for deeply-nested Dicts (thanks ChatGPT)
+#+begin_src julia :session day7 :exports both
+function check_size(folder)
+    # initialize the total size to 0
+    total_size = 0
+
+    # iterate over the key-value pairs in the folder
+    for (key, value) in pairs(folder)
+        # check if the value is a dictionary (i.e., a folder)
+        if isa(value, Dict)
+            # if it is a folder, recursively check the size of the folder
+            total_size += check_size(value)
+        else
+            # if it is not a folder, it must be a file, so add its size to the total
+            total_size += value
+        end
+    end
+
+    # return the total size of the folder
+    return total_size
+end
+#+end_src
+
+#+RESULTS:
+: check_size (generic function with 1 method)
+
+Iterating over all folders
+#+begin_src julia :session day7 :exports both
+folders = []
+
+function parse_folders(folder)
+    for (key, value) in folder
+        # check for folder
+        if isa(value, Dict)
+            push!(folders, check_size(folder[key]))
+            parse_folders(folder[key])
+        end
+    end
+end
+
+parse_folders(root)
+
+folders
+#+end_src
+
+#+RESULTS:
+: 4-element Vector{Any}:
+:  48381165
+:     94853
+:       584
+:  24933642
+
+Filtering folders
+#+begin_src julia :session day7 :results output :exports both
+println("Part 1: ", folders |> f -> filter(v -> v < 100000, f) |> values |> sum)
+#+end_src
+
+#+RESULTS:
+: Part 1: 95437
