@@ -94,3 +94,7 @@ parse_folders(root)
 folders
 
 println("Part 1: ", folders |> f -> filter(v -> v < 100000, f) |> values |> sum)
+
+min_size = 30000000 - (70000000 - check_size(root["/"]))
+
+println("Part 2: ", folders |> f -> filter(v -> v > min_size, f) |> minimum)

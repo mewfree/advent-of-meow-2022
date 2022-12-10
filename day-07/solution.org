@@ -166,3 +166,12 @@ println("Part 1: ", folders |> f -> filter(v -> v < 100000, f) |> values |> sum)
 
 #+RESULTS:
 : Part 1: 95437
+
+#+begin_src julia :session day7 :results output :exports both
+min_size = 30000000 - (70000000 - check_size(root["/"]))
+
+println("Part 2: ", folders |> f -> filter(v -> v > min_size, f) |> minimum)
+#+end_src
+
+#+RESULTS:
+: Part 2: 24933642
