@@ -80,7 +80,7 @@ end
 : custom_update (generic function with 1 method)
 
 Let's format dirs with / appended
-#+begin_src julia :session day7 :exports both
+#+begin_src julia :session day7 :results none
 root = Dict()
 current_dir = ""
 current_path = []
@@ -99,7 +99,9 @@ for cmd in input
         global root = custom_update(vcat(current_path, [local_filename]), parse(Int, size), root)
     end
 end
+#+end_src
 
+#+begin_src julia :session day7 :exports both :tangle no
 root
 #+end_src
 
@@ -134,7 +136,7 @@ end
 : check_size (generic function with 1 method)
 
 Iterating over all folders
-#+begin_src julia :session day7 :exports both
+#+begin_src julia :session day7 :results none
 folders = []
 
 function parse_folders(folder)
@@ -148,7 +150,9 @@ function parse_folders(folder)
 end
 
 parse_folders(root)
+#+end_src
 
+#+begin_src julia :session day7 :exports both :tangle no
 folders
 #+end_src
 

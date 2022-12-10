@@ -55,8 +55,6 @@ for cmd in input
     end
 end
 
-root
-
 function check_size(folder)
     # initialize the total size to 0
     total_size = 0
@@ -90,8 +88,6 @@ function parse_folders(folder)
 end
 
 parse_folders(root)
-
-folders
 
 println("Part 1: ", folders |> f -> filter(v -> v < 100000, f) |> values |> sum)
 
